@@ -1,0 +1,7 @@
+interface:
+  display_name: "Orchestrate"
+  short_description: "Lead reliable multi-agent software delivery"
+  default_prompt: "Use $orchestrate to coordinate this complex software task with focused subagents."
+
+policy:
+  allow_implicit_invocation: true
