@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.orchestrate/
+.gauntlet/
+.quality/
+dist/
+evals/results/

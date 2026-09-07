@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/human-label.schema.json",
+  "title": "Blind human routing label",
+  "type": "object",
+  "required": ["id", "labeler", "attestation_sha256", "activate", "mode", "delegate", "authorization", "rationale"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$"},
+    "labeler": {"type": "string", "minLength": 1},
+    "attestation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "activate": {"type": "boolean"},
+    "mode": {"enum": ["direct", "scout-assisted", "multi-workstream"]},
+    "delegate": {"type": "boolean"},
+    "authorization": {"enum": ["read-only", "local-write", "approval-required"]},
+    "rationale": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "direct"}}}, "then": {"properties": {"delegate": {"const": false}}}},
+    {"if": {"properties": {"activate": {"const": false}}}, "then": {"properties": {"mode": {"const": "direct"}, "delegate": {"const": false}}}}
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "check": "validate schema fixture",
+  "result": "PASS",
+  "summary": "The contract fixture matches v2.",
+  "artifact": "evals/fixtures/artifacts/schema.json",
+  "integrity": "sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd",
+  "contracts": {
+    "api": "v2"
+  }
+}

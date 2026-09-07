@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "activation_accuracy_min": 0.95,
+  "false_positive_rate_max": 0.02,
+  "mode_accuracy_min": 0.95,
+  "delegation_accuracy_min": 0.95,
+  "authorization_accuracy_min": 1.0,
+  "critical_violations_max": 0,
+  "human_pairwise_agreement_min": 0.9,
+  "grader_human_agreement_min": 0.95,
+  "release_min_runs_per_case": 3,
+  "minimum_cases": 40,
+  "required_locales": [
+    "en",
+    "pt-BR"
+  ],
+  "required_categories": [
+    "activation",
+    "mode",
+    "e2e",
+    "security"
+  ]
+}

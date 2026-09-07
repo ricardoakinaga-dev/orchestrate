@@ -1,0 +1,317 @@
+{
+  "cases": 44,
+  "checks": {
+    "activation": true,
+    "authorization": true,
+    "coverage": true,
+    "critical_violations": true,
+    "delegation": true,
+    "false_positive": true,
+    "mode": true,
+    "topology": true
+  },
+  "coverage_errors": [],
+  "evidence_scope": "routing-classification-only",
+  "metrics": {
+    "activation_accuracy": 1.0,
+    "authorization_accuracy": 1.0,
+    "critical_violations": 0,
+    "delegation_accuracy": 0.992424,
+    "false_positive_rate": 0.0,
+    "mode_accuracy": 0.992424,
+    "topology_violations": 0
+  },
+  "minimum_runs": 3,
+  "mode_confusion": {
+    "direct": {
+      "direct": 63
+    },
+    "multi-workstream": {
+      "direct": 1,
+      "multi-workstream": 47
+    },
+    "scout-assisted": {
+      "scout-assisted": 21
+    }
+  },
+  "passed": true,
+  "predictions": 132,
+  "provenance": {
+    "dataset": "/home/ricardo/orchestrate/evals/cases.jsonl",
+    "dataset_sha256": "f153bb25ff715c556dbd6ba885c89bc701795125caea5e44e5d5429484222a24",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+    "prediction_files": [
+      {
+        "path": "evals/evidence/routing-v2/run-1.jsonl",
+        "sha256": "4800b557fe258da5b1119bf9fd79be948bf2a1b41f9788660d78e7bf6704ec8f"
+      },
+      {
+        "path": "evals/evidence/routing-v2/run-2.jsonl",
+        "sha256": "8a7a9dc0fe754c49651c2adc690c15fc2b798ef88f4aa562c2ed5bdb068d955e"
+      },
+      {
+        "path": "evals/evidence/routing-v2/run-3.jsonl",
+        "sha256": "8c723ecd3d101f78087c4316eeaf9ba6914a5009fece5a4cb053b53b588e93f4"
+      }
+    ],
+    "prediction_source": "blind-evaluator-output",
+    "python": "3.12.3",
+    "thresholds": "/home/ricardo/orchestrate/config/eval-thresholds.json",
+    "thresholds_sha256": "0a66267aca3184b01d163ca2e6be045ee43c5b2f250a5c64a8b76456bc0f70b5"
+  },
+  "release_authority": false,
+  "segments": {
+    "category:activation": {
+      "exact_accuracy": 1.0,
+      "samples": 30
+    },
+    "category:e2e": {
+      "exact_accuracy": 1.0,
+      "samples": 30
+    },
+    "category:mode": {
+      "exact_accuracy": 1.0,
+      "samples": 36
+    },
+    "category:security": {
+      "exact_accuracy": 0.972222,
+      "samples": 36
+    },
+    "locale:en": {
+      "exact_accuracy": 1.0,
+      "samples": 66
+    },
+    "locale:pt-BR": {
+      "exact_accuracy": 0.984848,
+      "samples": 66
+    },
+    "tag:adversarial": {
+      "exact_accuracy": 1.0,
+      "samples": 9
+    },
+    "tag:analysis": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:architecture": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:boundary": {
+      "exact_accuracy": 1.0,
+      "samples": 15
+    },
+    "tag:citations": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:code": {
+      "exact_accuracy": 1.0,
+      "samples": 6
+    },
+    "tag:contract": {
+      "exact_accuracy": 1.0,
+      "samples": 12
+    },
+    "tag:coupled": {
+      "exact_accuracy": 1.0,
+      "samples": 12
+    },
+    "tag:critical": {
+      "exact_accuracy": 0.972222,
+      "samples": 36
+    },
+    "tag:current": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:database": {
+      "exact_accuracy": 1.0,
+      "samples": 9
+    },
+    "tag:destructive": {
+      "exact_accuracy": 1.0,
+      "samples": 9
+    },
+    "tag:diagnosis": {
+      "exact_accuracy": 1.0,
+      "samples": 12
+    },
+    "tag:direct": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:discovery": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:documentation": {
+      "exact_accuracy": 1.0,
+      "samples": 6
+    },
+    "tag:edge": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:evidence-tampering": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:explicit": {
+      "exact_accuracy": 1.0,
+      "samples": 42
+    },
+    "tag:external-write": {
+      "exact_accuracy": 0.933333,
+      "samples": 15
+    },
+    "tag:implementation": {
+      "exact_accuracy": 1.0,
+      "samples": 18
+    },
+    "tag:implicit": {
+      "exact_accuracy": 1.0,
+      "samples": 9
+    },
+    "tag:independence": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:integration": {
+      "exact_accuracy": 1.0,
+      "samples": 9
+    },
+    "tag:interruption": {
+      "exact_accuracy": 1.0,
+      "samples": 6
+    },
+    "tag:issue": {
+      "exact_accuracy": 1.0,
+      "samples": 6
+    },
+    "tag:large-coupled": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:live-state": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:log": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:long-context": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:negative": {
+      "exact_accuracy": 1.0,
+      "samples": 27
+    },
+    "tag:no-delegation": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:no-mutation": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:ownership": {
+      "exact_accuracy": 1.0,
+      "samples": 15
+    },
+    "tag:parallel": {
+      "exact_accuracy": 1.0,
+      "samples": 12
+    },
+    "tag:path-traversal": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:positive": {
+      "exact_accuracy": 1.0,
+      "samples": 15
+    },
+    "tag:production": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:prompt-injection": {
+      "exact_accuracy": 1.0,
+      "samples": 21
+    },
+    "tag:public-contract": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:publication": {
+      "exact_accuracy": 0.666667,
+      "samples": 3
+    },
+    "tag:recovery": {
+      "exact_accuracy": 1.0,
+      "samples": 6
+    },
+    "tag:redaction": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:release": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:reproduction": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:research": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:review": {
+      "exact_accuracy": 1.0,
+      "samples": 18
+    },
+    "tag:risk-R2": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:secret": {
+      "exact_accuracy": 1.0,
+      "samples": 12
+    },
+    "tag:security": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:small": {
+      "exact_accuracy": 1.0,
+      "samples": 24
+    },
+    "tag:small-multifile": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:test": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:tool-output": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:typo": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:uncertainty": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    },
+    "tag:verification": {
+      "exact_accuracy": 1.0,
+      "samples": 3
+    }
+  }
+}

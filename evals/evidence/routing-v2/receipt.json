@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "routing-classification-only",
+  "release_authority": false,
+  "immutable": false,
+  "dataset": {
+    "path": "evals/cases.jsonl",
+    "sha256": "f153bb25ff715c556dbd6ba885c89bc701795125caea5e44e5d5429484222a24",
+    "blind_export_sha256": "c813521a18b9e5d1f9cc2f8c3c63c499b7d3b26945809e9b4f213b237023a578"
+  },
+  "source_files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "133b26e833f46f2aab7c4fd279be8add25a8f428e2b585c06e754ffe006e8d9c"
+    },
+    {
+      "path": "references/agent-brief.md",
+      "sha256": "a0af69de2db3d4c576f3ab4a2f655d01113a88b75b61465b9fd05ce139df3fb1"
+    },
+    {
+      "path": "references/delegation.md",
+      "sha256": "cb41dc8bf75ba5298c44bf24ae8c1e71149b6118b749e7e401e3a56d7f2c933b"
+    },
+    {
+      "path": "references/orchestration-workflow.md",
+      "sha256": "72bb25d73cee5b48331ea69c10c3cfafce79f1c2a8b4984e8b631047f4e0f49c"
+    },
+    {
+      "path": "references/recovery.md",
+      "sha256": "2e807090222425ac254a6b4cde87fa52ca27c5e687802f7e95828895c9520da4"
+    },
+    {
+      "path": "references/security.md",
+      "sha256": "541b36cbad4e4d803f4d13271e51d4effd0d2942209b24a083fb2673199de8ed"
+    },
+    {
+      "path": "references/task-graph.md",
+      "sha256": "9fea4cb767b621c19f06d76d851cfb47468fa1d456a67b4d22b50d15c0219939"
+    },
+    {
+      "path": "references/verification.md",
+      "sha256": "780606b67f5adafc0309e221260fef56086adb8352a6664f9f0289084d54b547"
+    }
+  ],
+  "assignment_constraints": {
+    "allowed_inputs": [
+      "SKILL.md",
+      "references/*.md",
+      "blind request records containing only id and prompt"
+    ],
+    "gold_labels_denied": true,
+    "prior_evidence_denied": true,
+    "output_contract": "one routing prediction per case with fixed run number"
+  },
+  "evaluators": [
+    {
+      "run": 1,
+      "thread_id": "01a068d0-1812-7da1-abb3-46624b12ba18",
+      "agent_path": "/root/blind_routing_1",
+      "agent_nickname": "Kierkegaard",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "cli_version": "0.153.0",
+      "started_at": "2026-09-03T19:47:43Z",
+      "completed_at": "2026-09-03T19:53:36Z",
+      "tokens_used": 294002,
+      "output": {
+        "path": "evals/evidence/routing-v2/run-1.jsonl",
+        "sha256": "4800b557fe258da5b1119bf9fd79be948bf2a1b41f9788660d78e7bf6704ec8f"
+      },
+      "session_rollout_sha256": "aecbb39a01d37fab32410937f268900c84aea3fc180474709fe8f8ddebe49d96"
+    },
+    {
+      "run": 2,
+      "thread_id": "01a068d0-3d47-7a81-9b65-8886d2b48cb3",
+      "agent_path": "/root/blind_routing_2",
+      "agent_nickname": "Arendt",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "cli_version": "0.153.0",
+      "started_at": "2026-09-03T19:47:52Z",
+      "completed_at": "2026-09-03T19:53:37Z",
+      "tokens_used": 219005,
+      "output": {
+        "path": "evals/evidence/routing-v2/run-2.jsonl",
+        "sha256": "8a7a9dc0fe754c49651c2adc690c15fc2b798ef88f4aa562c2ed5bdb068d955e"
+      },
+      "session_rollout_sha256": "915fe5ce31ad51ff3c6e3db4604ab088d1d3708747951b55cc50fc64c4fc37af"
+    },
+    {
+      "run": 3,
+      "thread_id": "01a068d0-613e-7572-a4a8-e5cdfeeca011",
+      "agent_path": "/root/blind_routing_3",
+      "agent_nickname": "Godel",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "cli_version": "0.153.0",
+      "started_at": "2026-09-03T19:48:01Z",
+      "completed_at": "2026-09-03T19:53:52Z",
+      "tokens_used": 326022,
+      "output": {
+        "path": "evals/evidence/routing-v2/run-3.jsonl",
+        "sha256": "8c723ecd3d101f78087c4316eeaf9ba6914a5009fece5a4cb053b53b588e93f4"
+      },
+      "session_rollout_sha256": "33d826a5dbc08b874a029f870b01b70bf375404e68b3592c040b1bd7c09d2de3"
+    }
+  ],
+  "limitations": [
+    "The receipt and its evidence are uncommitted local files, so they are not immutable.",
+    "Session rollout digests are recorded from local Codex state but the rollout files are not distributed with the repository.",
+    "The receipt improves auditability but does not independently prove that evaluators never observed gold labels.",
+    "Routing classification evidence does not prove installed runtime behavior, safety enforcement, operational value, or release readiness."
+  ]
+}

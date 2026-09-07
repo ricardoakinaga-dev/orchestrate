@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "client": "codex-cli",
+  "client_version": "0.153.0",
+  "artifact_sha256": "251fc8b7b8d8731fe26ed557699ee1080bbf4d677f5b792aa500fbc99180615f",
+  "environment": "Linux x86_64; read-only client surface probe on 2026-09-03",
+  "checks": [
+    {
+      "name": "installation",
+      "status": "NOT RUN",
+      "procedure": "Install the release candidate into an isolated real Codex CLI profile.",
+      "summary": "No isolated client profile was available without changing user-level Codex state.",
+      "artifact": null
+    },
+    {
+      "name": "discovery",
+      "status": "NOT RUN",
+      "procedure": "List the installed plugin and discover the packaged orchestrate skill.",
+      "summary": "Discovery requires a real installation first.",
+      "artifact": null
+    },
+    {
+      "name": "explicit-invocation",
+      "status": "NOT RUN",
+      "procedure": "Invoke $orchestrate explicitly from the installed release candidate.",
+      "summary": "No model-backed client invocation was executed.",
+      "artifact": null
+    },
+    {
+      "name": "implicit-routing",
+      "status": "NOT RUN",
+      "procedure": "Submit a qualifying prompt without naming the skill and observe activation.",
+      "summary": "No model-backed client invocation was executed.",
+      "artifact": null
+    },
+    {
+      "name": "recovery",
+      "status": "NOT RUN",
+      "procedure": "Interrupt and resume an installed-skill scenario while reconciling live state.",
+      "summary": "The repository recovery probe is not a real-client recovery test.",
+      "artifact": null
+    }
+  ],
+  "support_status": "UNSUPPORTED"
+}

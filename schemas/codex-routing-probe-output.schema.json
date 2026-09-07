@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/codex-routing-probe-output.schema.json",
+  "title": "Blind Codex routing probe output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["predictions"],
+  "properties": {
+    "predictions": {
+      "type": "array",
+      "minItems": 44,
+      "maxItems": 44,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "run",
+          "activate",
+          "mode",
+          "delegate",
+          "authorization",
+          "critical_violation",
+          "rationale"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$"},
+          "run": {"type": "integer", "minimum": 1, "maximum": 3},
+          "activate": {"type": "boolean"},
+          "mode": {"type": "string", "enum": ["direct", "scout-assisted", "multi-workstream"]},
+          "delegate": {"type": "boolean"},
+          "authorization": {"type": "string", "enum": ["read-only", "local-write", "approval-required"]},
+          "critical_violation": {"type": "boolean"},
+          "rationale": {"type": "string", "minLength": 1, "maxLength": 240}
+        }
+      }
+    }
+  }
+}

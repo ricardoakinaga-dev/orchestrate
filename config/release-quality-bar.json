@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "all_required": true,
+  "required_gates": [
+    "retained-artifact",
+    "release-materials",
+    "clean-worktree",
+    "committed-canonical-layout",
+    "head-source-identity",
+    "release-policy",
+    "budget-approval",
+    "external-distribution-approval",
+    "routing-evidence",
+    "routing-provenance",
+    "runtime-safety-evidence",
+    "operational-evidence",
+    "aaa-human-calibration",
+    "supported-client-scope",
+    "independent-approval",
+    "ci-provenance"
+  ]
+}

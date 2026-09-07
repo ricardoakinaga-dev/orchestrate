@@ -1,0 +1,24 @@
+{
+  "baseline": "v1-static",
+  "observed_at": "2026-09-03",
+  "source_commit": "848640d04a8ca973a8d9dff16602152e3e49b31b",
+  "artifact": {
+    "files": 8,
+    "lines": 641,
+    "words": 4701,
+    "bytes": 33589,
+    "skill_words": 685,
+    "skill_bytes": 5263
+  },
+  "structural_validation": "PASS",
+  "behavioral_evaluation": "NOT RUN",
+  "independent_verification": "NOT RUN",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux x86_64",
+    "codex_cli": "not captured for the v1 static audit",
+    "model": "not applicable; no behavioral run was executed",
+    "evaluation_configuration": "not configured"
+  },
+  "notes": "Static baseline captured before the v2 rewrite. No behavioral claim is implied."
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 3,
+  "goal": "Recover a failed direct task without erasing evidence",
+  "contracts": {},
+  "limits": {
+    "max_attempts_per_task": 2,
+    "max_checkpoint_age_seconds": 300
+  },
+  "evidence_registry": {},
+  "tasks": [
+    {
+      "id": "T01",
+      "status": "DONE",
+      "dependencies": [],
+      "owns": ["src/app.py"],
+      "contracts": {},
+      "criteria": [
+        {
+          "id": "AC01",
+          "required": true,
+          "evidence": []
+        }
+      ],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "implemented",
+          "hypothesis_id": "H01",
+          "hypothesis": "The direct jump is valid.",
+          "evidence_delta": "No validating evidence was produced.",
+          "evidence_refs": []
+        }
+      ],
+      "history": ["PENDING", "DONE"],
+      "open_findings": [
+        {
+          "severity": "high",
+          "summary": "Unresolved regression"
+        }
+      ]
+    }
+  ]
+}

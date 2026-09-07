@@ -1,0 +1,13 @@
+{
+  "artifact_sha256": "9cd7669bb824204ec7d5ee5e24560600b544b5a51cdffd3490673c871265fd0a",
+  "client": "codex-cli",
+  "client_version": "0.153.0",
+  "explicit_charged_tokens": 33603,
+  "explicit_workspace_sha256": "5994dc2294831f9db6164762048410162425c81c0ce876ba3f136279e6f56a1d",
+  "implicit_charged_tokens": 31263,
+  "implicit_workspace_sha256": "5994dc2294831f9db6164762048410162425c81c0ce876ba3f136279e6f56a1d",
+  "installation_scope": "isolated-repository-.agents/skills",
+  "passed": true,
+  "schema_version": 1,
+  "skill_sha256": "2c0fb7cc4b593f115a43d873efdabf9dffe0e27037a9c8e14a1fd1622eb977fc"
+}

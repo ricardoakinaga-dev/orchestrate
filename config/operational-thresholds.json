@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "minimum_runs_per_configuration": 3,
+  "quality_noninferiority_tolerance": 0.0,
+  "parallel_latency_improvement_min": 0.2,
+  "max_token_ratio": 1.5,
+  "max_cost_ratio": 1.5,
+  "max_agents": 4,
+  "max_retries": 2,
+  "max_collisions": 0,
+  "approval_status": "candidate-defaults"
+}

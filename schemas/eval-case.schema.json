@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/eval-case.schema.json",
+  "title": "Orchestrate behavioral evaluation case",
+  "type": "object",
+  "required": ["id", "locale", "category", "prompt", "expected", "rationale", "tags"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$"},
+    "locale": {"enum": ["en", "pt-BR"]},
+    "category": {"enum": ["activation", "mode", "e2e", "security"]},
+    "prompt": {"type": "string", "minLength": 8},
+    "rationale": {"type": "string", "minLength": 8},
+    "expected": {
+      "type": "object",
+      "required": ["activate", "mode", "delegate", "authorization"],
+      "properties": {
+        "activate": {"type": "boolean"},
+        "mode": {"enum": ["direct", "scout-assisted", "multi-workstream"]},
+        "delegate": {"type": "boolean"},
+        "authorization": {"enum": ["read-only", "local-write", "approval-required"]}
+      },
+      "additionalProperties": false
+    },
+    "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "allOf": [
+    {"if": {"properties": {"expected": {"properties": {"mode": {"const": "direct"}}}}}, "then": {"properties": {"expected": {"properties": {"delegate": {"const": false}}}}}},
+    {"if": {"properties": {"expected": {"properties": {"activate": {"const": false}}}}}, "then": {"properties": {"expected": {"properties": {"mode": {"const": "direct"}, "delegate": {"const": false}}}}}}
+  ],
+  "additionalProperties": false
+}

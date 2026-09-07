@@ -1,0 +1,238 @@
+name: Quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Run quality gate
+        run: python3 scripts/quality_gate.py --report .quality/report.json
+      - name: Build the untrusted release candidate
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python3 scripts/build_plugin.py --output dist/orchestrate --archive dist/orchestrate-candidate.zip
+      - name: Transfer the candidate to isolated release runners
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: orchestrate-candidate-${{ github.sha }}
+          path: dist/orchestrate-candidate.zip
+          if-no-files-found: error
+
+  release-validation:
+    needs: quality
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 10
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Download the candidate from the unprivileged quality runner
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: orchestrate-candidate-${{ github.sha }}
+          path: ${{ runner.temp }}/orchestrate-candidate
+      - name: Verify external authority, then run the exact-commit release gate
+        shell: bash
+        env:
+          ORCHESTRATE_ALLOWED_SIGNERS_B64: ${{ secrets.ORCHESTRATE_ALLOWED_SIGNERS_B64 }}
+          ORCHESTRATE_ALLOWED_SIGNERS_SHA256: ${{ secrets.ORCHESTRATE_ALLOWED_SIGNERS_SHA256 }}
+          ORCHESTRATE_AUTHORITY_VERIFIER_B64: ${{ secrets.ORCHESTRATE_AUTHORITY_VERIFIER_B64 }}
+          ORCHESTRATE_AUTHORITY_VERIFIER_SHA256: ${{ secrets.ORCHESTRATE_AUTHORITY_VERIFIER_SHA256 }}
+          ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64 }}
+          ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64 }}
+          ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL }}
+          ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64 }}
+          ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64 }}
+          ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL }}
+        run: |
+          set -euo pipefail
+          export PATH="/usr/bin:/bin"
+          export PYTHONDONTWRITEBYTECODE=1
+          release_root="${RUNNER_TEMP}/orchestrate-release"
+          trust_root="${RUNNER_TEMP}/orchestrate-release-trust"
+          candidate_archive="${RUNNER_TEMP}/orchestrate-candidate/orchestrate-candidate.zip"
+          trusted_python="$(/usr/bin/readlink -f "${pythonLocation}/bin/python3")"
+          case "$trusted_python" in
+            /opt/hostedtoolcache/Python/*/x64/bin/python3.*) ;;
+            *) echo "unexpected setup-python location" >&2; exit 1 ;;
+          esac
+          test -x "$trusted_python"
+          test ! -L "$trusted_python"
+          /usr/bin/install -d -m 0700 "$trust_root"
+          : "${ORCHESTRATE_ALLOWED_SIGNERS_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_ALLOWED_SIGNERS_SHA256:?missing protected release secret}"
+          : "${ORCHESTRATE_AUTHORITY_VERIFIER_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_AUTHORITY_VERIFIER_SHA256:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL:?missing protected release secret}"
+          printf '%s' "$ORCHESTRATE_ALLOWED_SIGNERS_B64" | /usr/bin/base64 --decode > "$trust_root/allowed-signers"
+          printf '%s' "$ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64" | /usr/bin/base64 --decode > "$trust_root/product-owner.json"
+          printf '%s' "$ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64" | /usr/bin/base64 --decode > "$trust_root/product-owner.sig"
+          printf '%s' "$ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64" | /usr/bin/base64 --decode > "$trust_root/final-verifier.json"
+          printf '%s' "$ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64" | /usr/bin/base64 --decode > "$trust_root/final-verifier.sig"
+          chmod 0600 "$trust_root"/*
+          test "${#ORCHESTRATE_ALLOWED_SIGNERS_SHA256}" -eq 64
+          case "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256" in *[!0-9a-f]*) echo "invalid protected trust-anchor digest" >&2; exit 1 ;; esac
+          test "${#ORCHESTRATE_AUTHORITY_VERIFIER_SHA256}" -eq 64
+          case "$ORCHESTRATE_AUTHORITY_VERIFIER_SHA256" in *[!0-9a-f]*) echo "invalid protected authority-verifier digest" >&2; exit 1 ;; esac
+          test "$(/usr/bin/sha256sum "$trust_root/allowed-signers" | cut -d ' ' -f 1)" = "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256"
+          /usr/bin/ssh-keygen -Y verify -f "$trust_root/allowed-signers" -I "$ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL" -n orchestrate-release -s "$trust_root/product-owner.sig" < "$trust_root/product-owner.json"
+          /usr/bin/ssh-keygen -Y verify -f "$trust_root/allowed-signers" -I "$ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL" -n orchestrate-release -s "$trust_root/final-verifier.sig" < "$trust_root/final-verifier.json"
+          run_authority_verifier() {
+            "$trusted_python" -c '
+          import base64, hashlib, os, sys
+          payload = base64.b64decode(os.environ["ORCHESTRATE_AUTHORITY_VERIFIER_B64"], validate=True)
+          expected = os.environ["ORCHESTRATE_AUTHORITY_VERIFIER_SHA256"]
+          if len(expected) != 64 or hashlib.sha256(payload).hexdigest() != expected:
+              raise SystemExit("protected authority-verifier digest mismatch")
+          sys.argv = ["protected-authority-verifier", *sys.argv[1:]]
+          exec(compile(payload, "<protected-authority-verifier>", "exec"), {"__name__": "__main__", "__file__": "<protected-authority-verifier>"})
+          ' "$@"
+          }
+          run_authority_verifier \
+            --root "$GITHUB_WORKSPACE" \
+            --allowed-signers "$trust_root/allowed-signers" \
+            --allowed-signers-sha256 "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256" \
+            --product-attestation "$trust_root/product-owner.json" \
+            --product-signature "$trust_root/product-owner.sig" \
+            --product-principal "$ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL" \
+            --final-attestation "$trust_root/final-verifier.json" \
+            --final-signature "$trust_root/final-verifier.sig" \
+            --final-principal "$ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL"
+          export ORCHESTRATE_ALLOWED_SIGNERS="$trust_root/allowed-signers"
+          export ORCHESTRATE_PRODUCT_OWNER_ATTESTATION="$trust_root/product-owner.json"
+          export ORCHESTRATE_PRODUCT_OWNER_SIGNATURE="$trust_root/product-owner.sig"
+          export ORCHESTRATE_FINAL_VERIFIER_ATTESTATION="$trust_root/final-verifier.json"
+          export ORCHESTRATE_FINAL_VERIFIER_SIGNATURE="$trust_root/final-verifier.sig"
+          /usr/bin/git worktree add --detach "$release_root" "$GITHUB_SHA"
+          cd "$release_root"
+          "$trusted_python" scripts/validate_release.py \
+            --artifact "$candidate_archive" \
+            --output "$release_root/.quality/release-report.json"
+          run_authority_verifier \
+            --root "$release_root" \
+            --artifact "$candidate_archive" \
+            --allowed-signers "$trust_root/allowed-signers" \
+            --allowed-signers-sha256 "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256" \
+            --product-attestation "$trust_root/product-owner.json" \
+            --product-signature "$trust_root/product-owner.sig" \
+            --product-principal "$ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL" \
+            --final-attestation "$trust_root/final-verifier.json" \
+            --final-signature "$trust_root/final-verifier.sig" \
+            --final-principal "$ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL"
+
+  release:
+    needs: [quality, release-validation]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 10
+    steps:
+      - name: Check out release source without running candidate code
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Download the pristine candidate from the unprivileged quality runner
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: orchestrate-candidate-${{ github.sha }}
+          path: ${{ runner.temp }}/orchestrate-candidate
+      - name: Verify protected external authority over the exact artifact
+        shell: bash
+        env:
+          ORCHESTRATE_ALLOWED_SIGNERS_B64: ${{ secrets.ORCHESTRATE_ALLOWED_SIGNERS_B64 }}
+          ORCHESTRATE_ALLOWED_SIGNERS_SHA256: ${{ secrets.ORCHESTRATE_ALLOWED_SIGNERS_SHA256 }}
+          ORCHESTRATE_AUTHORITY_VERIFIER_B64: ${{ secrets.ORCHESTRATE_AUTHORITY_VERIFIER_B64 }}
+          ORCHESTRATE_AUTHORITY_VERIFIER_SHA256: ${{ secrets.ORCHESTRATE_AUTHORITY_VERIFIER_SHA256 }}
+          ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64 }}
+          ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64 }}
+          ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL: ${{ secrets.ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL }}
+          ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64 }}
+          ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64 }}
+          ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL: ${{ secrets.ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL }}
+        run: |
+          set -euo pipefail
+          export PATH="/usr/bin:/bin"
+          export PYTHONDONTWRITEBYTECODE=1
+          trust_root="${RUNNER_TEMP}/orchestrate-release-trust"
+          candidate_archive="${RUNNER_TEMP}/orchestrate-candidate/orchestrate-candidate.zip"
+          trusted_python="$(/usr/bin/readlink -f "${pythonLocation}/bin/python3")"
+          case "$trusted_python" in
+            /opt/hostedtoolcache/Python/*/x64/bin/python3.*) ;;
+            *) echo "unexpected setup-python location" >&2; exit 1 ;;
+          esac
+          test -x "$trusted_python"
+          test ! -L "$trusted_python"
+          /usr/bin/install -d -m 0700 "$trust_root"
+          : "${ORCHESTRATE_ALLOWED_SIGNERS_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_ALLOWED_SIGNERS_SHA256:?missing protected release secret}"
+          : "${ORCHESTRATE_AUTHORITY_VERIFIER_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_AUTHORITY_VERIFIER_SHA256:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64:?missing protected release secret}"
+          : "${ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL:?missing protected release secret}"
+          printf '%s' "$ORCHESTRATE_ALLOWED_SIGNERS_B64" | /usr/bin/base64 --decode > "$trust_root/allowed-signers"
+          printf '%s' "$ORCHESTRATE_PRODUCT_OWNER_ATTESTATION_B64" | /usr/bin/base64 --decode > "$trust_root/product-owner.json"
+          printf '%s' "$ORCHESTRATE_PRODUCT_OWNER_SIGNATURE_B64" | /usr/bin/base64 --decode > "$trust_root/product-owner.sig"
+          printf '%s' "$ORCHESTRATE_FINAL_VERIFIER_ATTESTATION_B64" | /usr/bin/base64 --decode > "$trust_root/final-verifier.json"
+          printf '%s' "$ORCHESTRATE_FINAL_VERIFIER_SIGNATURE_B64" | /usr/bin/base64 --decode > "$trust_root/final-verifier.sig"
+          chmod 0600 "$trust_root"/*
+          test "${#ORCHESTRATE_ALLOWED_SIGNERS_SHA256}" -eq 64
+          case "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256" in *[!0-9a-f]*) echo "invalid protected trust-anchor digest" >&2; exit 1 ;; esac
+          test "$(/usr/bin/sha256sum "$trust_root/allowed-signers" | cut -d ' ' -f 1)" = "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256"
+          "$trusted_python" -c '
+          import base64, hashlib, os, sys
+          payload = base64.b64decode(os.environ["ORCHESTRATE_AUTHORITY_VERIFIER_B64"], validate=True)
+          expected = os.environ["ORCHESTRATE_AUTHORITY_VERIFIER_SHA256"]
+          if len(expected) != 64 or hashlib.sha256(payload).hexdigest() != expected:
+              raise SystemExit("protected authority-verifier digest mismatch")
+          sys.argv = ["protected-authority-verifier", *sys.argv[1:]]
+          exec(compile(payload, "<protected-authority-verifier>", "exec"), {"__name__": "__main__", "__file__": "<protected-authority-verifier>"})
+          ' \
+            --root "$GITHUB_WORKSPACE" \
+            --artifact "$candidate_archive" \
+            --allowed-signers "$trust_root/allowed-signers" \
+            --allowed-signers-sha256 "$ORCHESTRATE_ALLOWED_SIGNERS_SHA256" \
+            --product-attestation "$trust_root/product-owner.json" \
+            --product-signature "$trust_root/product-owner.sig" \
+            --product-principal "$ORCHESTRATE_PRODUCT_OWNER_PRINCIPAL" \
+            --final-attestation "$trust_root/final-verifier.json" \
+            --final-signature "$trust_root/final-verifier.sig" \
+            --final-principal "$ORCHESTRATE_FINAL_VERIFIER_PRINCIPAL"
+      - name: Retain only the pristine externally authorized plugin
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: orchestrate-${{ github.sha }}
+          path: ${{ runner.temp }}/orchestrate-candidate/orchestrate-candidate.zip
+          if-no-files-found: error

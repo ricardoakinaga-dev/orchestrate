@@ -1,0 +1,17 @@
+{
+  "explicit": {
+    "classification": "implementation",
+    "restart_recommended": false,
+    "validator_exit_code": 1,
+    "validator_path": "/tmp/orchestrate-codex-explicit-22ftfoj0/work/.agents/skills/orchestrate/scripts/validate_state.py"
+  },
+  "implicit": {
+    "classification": "implementation",
+    "restart_recommended": false,
+    "validator_exit_code": 1,
+    "validator_path": "/tmp/orchestrate-codex-implicit-k4rbfz01/work/.agents/skills/orchestrate/scripts/validate_state.py"
+  },
+  "passed": true,
+  "schema_version": 1,
+  "state_preserved": true
+}

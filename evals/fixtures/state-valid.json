@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "goal": "Deliver a verified two-lane change",
+  "contracts": {
+    "api": "v2"
+  },
+  "limits": {
+    "max_attempts_per_task": 2,
+    "max_checkpoint_age_seconds": 300
+  },
+  "evidence_registry": {
+    "sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd": "evals/fixtures/artifacts/schema.json"
+  },
+  "tasks": [
+    {
+      "id": "T01",
+      "status": "DONE",
+      "dependencies": [],
+      "owns": ["schema:api-v2"],
+      "contracts": {
+        "api": "v2"
+      },
+      "criteria": [
+        {
+          "id": "AC01",
+          "required": true,
+          "evidence": [
+            {
+              "check": "validate schema fixture",
+              "result": "PASS",
+              "summary": "The contract fixture matches v2.",
+              "artifact": "evals/fixtures/artifacts/schema.json",
+              "integrity": "sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd",
+              "contract_integrity": "sha256:06bfa55b374edbe086685b1453f4ee053a82f13d18e6a27340e8d8269110a6e3",
+              "manifest": "evals/fixtures/artifacts/schema-evidence.json",
+              "manifest_integrity": "sha256:93d710ba25f31f2ae33ba9b2e35d96670e5814219460eebf929ef48ef3d5874d",
+              "current": true
+            }
+          ]
+        }
+      ],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "implemented",
+          "hypothesis_id": "H01",
+          "hypothesis": "A frozen API contract can be validated independently.",
+          "evidence_delta": "Schema fixture passed and its digest was recorded.",
+          "evidence_refs": ["sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd"]
+        }
+      ],
+      "history": ["PENDING", "READY", "RUNNING", "IMPLEMENTED", "REVIEW", "VERIFIED", "DONE"],
+      "open_findings": []
+    },
+    {
+      "id": "T02",
+      "status": "RUNNING",
+      "dependencies": ["T01"],
+      "owns": ["src/api/**"],
+      "contracts": {
+        "api": "v2"
+      },
+      "criteria": [
+        {
+          "id": "AC02",
+          "required": true,
+          "evidence": []
+        }
+      ],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "running",
+          "hypothesis_id": "H02",
+          "hypothesis": "The API lane can implement against contract v2.",
+          "evidence_delta": "Contract dependency T01 is DONE.",
+          "evidence_refs": []
+        }
+      ],
+      "history": ["PENDING", "READY", "RUNNING"],
+      "open_findings": [],
+      "execution": {
+        "process_id": 10001,
+        "process_start_token": "fixture-process-t02-generation-1",
+        "observed_at": "2026-09-03T00:00:00Z",
+        "checkpoint_generation": 1,
+        "workspace_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifact_fingerprint": "sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd",
+        "observer": "deterministic-fixture"
+      }
+    },
+    {
+      "id": "T03",
+      "status": "RUNNING",
+      "dependencies": ["T01"],
+      "owns": ["src/ui/**"],
+      "contracts": {
+        "api": "v2"
+      },
+      "criteria": [
+        {
+          "id": "AC03",
+          "required": true,
+          "evidence": []
+        }
+      ],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "running",
+          "hypothesis_id": "H03",
+          "hypothesis": "The UI lane can implement against contract v2.",
+          "evidence_delta": "Contract dependency T01 is DONE.",
+          "evidence_refs": []
+        }
+      ],
+      "history": ["PENDING", "READY", "RUNNING"],
+      "open_findings": [],
+      "execution": {
+        "process_id": 10002,
+        "process_start_token": "fixture-process-t03-generation-1",
+        "observed_at": "2026-09-03T00:00:00Z",
+        "checkpoint_generation": 1,
+        "workspace_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifact_fingerprint": "sha256:e74ccc80a2d880d028002d7e470db7009a16aca3706ba564432679a40820aedd",
+        "observer": "deterministic-fixture"
+      }
+    }
+  ]
+}

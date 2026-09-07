@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/labeler-registry.schema.json",
+  "title": "Verified human labeler registry",
+  "type": "object",
+  "required": ["schema_version", "labelers"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "labelers": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "identity_type", "verified_by", "verification_method", "principal", "attestation_path", "attestation_sha256", "signature_path", "signature_sha256"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "identity_type": {"const": "human"},
+          "verified_by": {"type": "string", "minLength": 1},
+          "verification_method": {"const": "signed-human-attestation"},
+          "principal": {"type": "string", "minLength": 1},
+          "attestation_path": {"type": "string", "minLength": 1},
+          "attestation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "signature_path": {"type": "string", "minLength": 1},
+          "signature_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

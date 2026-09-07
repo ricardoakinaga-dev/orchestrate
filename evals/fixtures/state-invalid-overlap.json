@@ -1,0 +1,52 @@
+{
+  "schema_version": 3,
+  "goal": "Demonstrate ownership collision detection",
+  "contracts": {},
+  "limits": {
+    "max_attempts_per_task": 2,
+    "max_checkpoint_age_seconds": 300
+  },
+  "evidence_registry": {},
+  "tasks": [
+    {
+      "id": "T01",
+      "status": "RUNNING",
+      "dependencies": [],
+      "owns": ["src/**"],
+      "contracts": {},
+      "criteria": [],
+      "attempts": [{"number": 1, "outcome": "running", "hypothesis_id": "H01", "hypothesis": "Own the broad source tree.", "evidence_delta": "Lane started.", "evidence_refs": []}],
+      "history": ["PENDING", "READY", "RUNNING"],
+      "open_findings": [],
+      "execution": {
+        "process_id": 11001,
+        "process_start_token": "fixture-overlap-t01-generation-1",
+        "observed_at": "2026-09-03T00:00:00Z",
+        "checkpoint_generation": 1,
+        "workspace_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifact_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "observer": "deterministic-fixture"
+      }
+    },
+    {
+      "id": "T02",
+      "status": "RUNNING",
+      "dependencies": [],
+      "owns": ["src/api/**"],
+      "contracts": {},
+      "criteria": [],
+      "attempts": [{"number": 1, "outcome": "running", "hypothesis_id": "H02", "hypothesis": "Own the API subtree.", "evidence_delta": "Lane started.", "evidence_refs": []}],
+      "history": ["PENDING", "READY", "RUNNING"],
+      "open_findings": [],
+      "execution": {
+        "process_id": 11002,
+        "process_start_token": "fixture-overlap-t02-generation-1",
+        "observed_at": "2026-09-03T00:00:00Z",
+        "checkpoint_generation": 1,
+        "workspace_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "artifact_fingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "observer": "deterministic-fixture"
+      }
+    }
+  ]
+}

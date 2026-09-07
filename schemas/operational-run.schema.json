@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/operational-run.schema.json",
+  "title": "Orchestrate operational benchmark run",
+  "type": "object",
+  "required": ["scenario", "configuration", "run", "task_class", "status", "quality_score", "tokens", "latency_ms", "agents", "retries", "rework", "collisions", "cost_usd", "environment", "candidate_source_sha256", "candidate_artifact_sha256", "task_input_sha256", "artifact_sha256", "quality_evidence_sha256", "measurement_source", "owner_attestation"],
+  "properties": {
+    "scenario": {"type": "string", "minLength": 1},
+    "configuration": {"enum": ["single", "orchestrate"]},
+    "run": {"type": "integer", "minimum": 1},
+    "task_class": {"enum": ["parallelizable", "coupled", "review"]},
+    "status": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT RUN"]},
+    "quality_score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "tokens": {"type": ["integer", "null"], "minimum": 0},
+    "latency_ms": {"type": ["integer", "null"], "minimum": 0},
+    "agents": {"type": ["integer", "null"], "minimum": 0},
+    "retries": {"type": ["integer", "null"], "minimum": 0},
+    "rework": {"type": ["integer", "null"], "minimum": 0},
+    "collisions": {"type": ["integer", "null"], "minimum": 0},
+    "cost_usd": {"type": ["number", "null"], "minimum": 0},
+    "environment": {"type": "string", "minLength": 1},
+    "candidate_source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task_input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "quality_evidence_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "measurement_source": {"enum": ["codex-exec-jsonl", "codex-app-server", "fixture"]},
+    "owner_attestation": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["PASS", "FAIL"]}}},
+      "then": {
+        "properties": {
+          "quality_score": {"type": "number"},
+          "tokens": {"type": "integer"},
+          "latency_ms": {"type": "integer"},
+          "agents": {"type": "integer"},
+          "retries": {"type": "integer"},
+          "rework": {"type": "integer"},
+          "collisions": {"type": "integer"},
+          "cost_usd": {"type": "number"}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

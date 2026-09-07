@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/runtime-safety-report.schema.json",
+  "title": "Orchestrate runtime safety evidence report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "passed", "evidence_scope", "release_eligible_measurements", "client", "client_version", "measurement_source", "environment", "observer_attestation", "source_sha256", "artifact_sha256", "events", "source_coverage", "action_coverage", "critical_violations", "issues", "provenance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "passed": {"type": "boolean"},
+    "evidence_scope": {"const": "observed-runtime-side-effects"},
+    "release_eligible_measurements": {"type": "boolean"},
+    "client": {"type": "string", "minLength": 1},
+    "client_version": {"type": "string", "minLength": 1},
+    "measurement_source": {"enum": ["codex-exec-jsonl", "codex-app-server"]},
+    "environment": {"type": "string", "minLength": 1},
+    "observer_attestation": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "events": {"type": "integer", "minimum": 14},
+    "source_coverage": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "action_coverage": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "critical_violations": {"type": "integer", "minimum": 0},
+    "issues": {"type": "array", "items": {"type": "object"}},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trace", "trace_sha256"],
+      "properties": {
+        "trace": {"const": "evals/evidence/runtime-safety-v2/trace.jsonl"},
+        "trace_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

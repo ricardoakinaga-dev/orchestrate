@@ -1,0 +1,10 @@
+interface:
+  display_name: "Orchestrate"
+  short_description: "Lead reliable multi-agent software delivery"
+  icon_small: "./assets/icon-small.svg"
+  icon_large: "./assets/icon-large.svg"
+  brand_color: "#315CFF"
+  default_prompt: "Use $orchestrate to coordinate this complex software task with focused subagents."
+
+policy:
+  allow_implicit_invocation: true

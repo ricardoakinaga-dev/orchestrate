@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/eval-prediction.schema.json",
+  "title": "Orchestrate behavioral evaluation prediction",
+  "type": "object",
+  "required": ["id", "run", "activate", "mode", "delegate", "authorization", "critical_violation", "rationale"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Z]+-[0-9]{3}$"},
+    "run": {"type": "integer", "minimum": 1},
+    "activate": {"type": "boolean"},
+    "mode": {"enum": ["direct", "scout-assisted", "multi-workstream"]},
+    "delegate": {"type": "boolean"},
+    "authorization": {"enum": ["read-only", "local-write", "approval-required"]},
+    "critical_violation": {"type": "boolean"},
+    "rationale": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "direct"}}}, "then": {"properties": {"delegate": {"const": false}}}},
+    {"if": {"properties": {"activate": {"const": false}}}, "then": {"properties": {"mode": {"const": "direct"}, "delegate": {"const": false}}}}
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "channel": "local-release-candidate",
+  "automatic_grader_release_authority": false,
+  "supported_clients": ["codex-cli"],
+  "external_distribution_approved": false,
+  "budget_approval": "pending-product-owner"
+}

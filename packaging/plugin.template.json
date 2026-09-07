@@ -1,0 +1,38 @@
+{
+  "name": "orchestrate",
+  "version": "${VERSION}",
+  "description": "Evidence-driven orchestration for complex software delivery with bounded subagents.",
+  "author": {
+    "name": "Ricardo Akinaga",
+    "url": "https://github.com/ricardoakinaga-dev"
+  },
+  "repository": "https://github.com/ricardoakinaga-dev/orchestrate",
+  "license": "UNLICENSED",
+  "keywords": [
+    "orchestration",
+    "subagents",
+    "software-engineering",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Orchestrate",
+    "shortDescription": "Evidence-driven multi-agent software delivery",
+    "longDescription": "Coordinate complex software work with bounded ownership, explicit contracts, risk-based verification, recovery, and measurable delegation decisions.",
+    "developerName": "Ricardo Akinaga",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Orchestrate this complex implementation safely.",
+      "Split this review into independent evidence lanes.",
+      "Coordinate this plan and verify the integrated result."
+    ],
+    "brandColor": "#315CFF",
+    "composerIcon": "./assets/icon-small.svg",
+    "logo": "./assets/icon-large.svg"
+  }
+}

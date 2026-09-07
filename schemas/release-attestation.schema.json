@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/release-attestation.schema.json",
+  "title": "Externally signed Orchestrate release statement",
+  "oneOf": [
+    {"$ref": "#/$defs/productOwner"},
+    {"$ref": "#/$defs/independentVerifier"},
+    {"$ref": "#/$defs/humanLabeler"}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "issuedAt": {"type": "string", "format": "date-time"},
+    "principal": {"type": "string", "minLength": 1},
+    "productOwner": {
+      "type": "object",
+      "required": ["schema_version", "role", "principal", "issued_at", "head", "skill_sha256", "artifact_sha256", "quality_bar_sha256", "budgets_sha256", "operational_thresholds_sha256", "external_distribution_approved", "human_labeler_principals"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "role": {"const": "product-owner"},
+        "principal": {"$ref": "#/$defs/principal"},
+        "issued_at": {"$ref": "#/$defs/issuedAt"},
+        "head": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "skill_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_sha256": {"$ref": "#/$defs/sha256"},
+        "quality_bar_sha256": {"$ref": "#/$defs/sha256"},
+        "budgets_sha256": {"$ref": "#/$defs/sha256"},
+        "operational_thresholds_sha256": {"$ref": "#/$defs/sha256"},
+        "external_distribution_approved": {"const": true},
+        "human_labeler_principals": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/principal"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "independentVerifier": {
+      "type": "object",
+      "required": ["schema_version", "role", "principal", "issued_at", "head", "skill_sha256", "artifact_sha256", "quality_bar_sha256", "product_attestation_sha256", "product_signature_sha256", "verdict"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "role": {"const": "independent-verifier"},
+        "principal": {"$ref": "#/$defs/principal"},
+        "issued_at": {"$ref": "#/$defs/issuedAt"},
+        "head": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "skill_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_sha256": {"$ref": "#/$defs/sha256"},
+        "quality_bar_sha256": {"$ref": "#/$defs/sha256"},
+        "product_attestation_sha256": {"$ref": "#/$defs/sha256"},
+        "product_signature_sha256": {"$ref": "#/$defs/sha256"},
+        "verdict": {"const": "APPROVE"}
+      },
+      "additionalProperties": false
+    },
+    "humanLabeler": {
+      "type": "object",
+      "required": ["schema_version", "role", "principal", "issued_at", "labeler_id", "identity_type", "verified_by"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "role": {"const": "human-labeler"},
+        "principal": {"$ref": "#/$defs/principal"},
+        "issued_at": {"$ref": "#/$defs/issuedAt"},
+        "labeler_id": {"type": "string", "minLength": 1},
+        "identity_type": {"const": "human"},
+        "verified_by": {"$ref": "#/$defs/principal"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

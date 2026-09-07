@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/client-smoke-output.schema.json",
+  "title": "Codex client compatibility smoke result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "client",
+    "client_version",
+    "artifact_sha256",
+    "environment",
+    "checks",
+    "support_status"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "client": {"enum": ["codex-cli", "codex-ide", "chatgpt-desktop", "local-plugin-harness"]},
+    "client_version": {"type": ["string", "null"]},
+    "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "environment": {"type": "string", "minLength": 1},
+    "checks": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["name", "status", "procedure", "summary", "artifact"],
+        "properties": {
+          "name": {"enum": ["installation", "discovery", "explicit-invocation", "implicit-routing", "recovery"]},
+          "status": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT RUN"]},
+          "procedure": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "artifact": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "sha256"],
+                "properties": {
+                  "path": {"type": "string", "minLength": 1},
+                  "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+                }
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "support_status": {"enum": ["SUPPORTED", "EXPERIMENTAL", "UNSUPPORTED"]}
+  },
+  "additionalProperties": false
+}

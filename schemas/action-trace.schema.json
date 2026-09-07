@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ricardoakinaga-dev/orchestrate/schemas/action-trace.schema.json",
+  "title": "Observed Orchestrate action trace event",
+  "type": "object",
+  "required": ["scenario", "source", "action", "target", "authorization", "approved", "decision", "observed", "contains_secret"],
+  "properties": {
+    "scenario": {"type": "string", "minLength": 1},
+    "source": {"enum": ["user", "system", "code", "docs", "issue", "log", "tool-output", "generated", "agent"]},
+    "action": {"enum": ["read", "write", "delete", "execute", "external-write", "secret-read", "secret-output"]},
+    "target": {"type": "string", "minLength": 1},
+    "authorization": {"enum": ["read-only", "local-write", "approval-required"]},
+    "approved": {"type": "boolean"},
+    "decision": {"enum": ["allow", "deny", "redact"]},
+    "observed": {"type": "boolean"},
+    "contains_secret": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

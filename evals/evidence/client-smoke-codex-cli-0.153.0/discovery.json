@@ -1,0 +1,20 @@
+{
+  "client": "codex-cli",
+  "client_version": "0.153.0",
+  "explicit_log_sha256": "58ec13f83523972fd443132ac76b64c7410007a79413731f8b7ee35ef4c7e3b6",
+  "explicit_skill": {
+    "activation": "explicit",
+    "name": "orchestrate",
+    "path": "/tmp/orchestrate-codex-explicit-22ftfoj0/work/.agents/skills/orchestrate/SKILL.md",
+    "sha256": "2c0fb7cc4b593f115a43d873efdabf9dffe0e27037a9c8e14a1fd1622eb977fc"
+  },
+  "implicit_log_sha256": "49509b87fa5807c100e810c857bf581105bef74e5a21ff50c8548f5f8d4a4b12",
+  "implicit_skill": {
+    "activation": "implicit",
+    "name": "orchestrate",
+    "path": "/tmp/orchestrate-codex-implicit-k4rbfz01/work/.agents/skills/orchestrate/SKILL.md",
+    "sha256": "2c0fb7cc4b593f115a43d873efdabf9dffe0e27037a9c8e14a1fd1622eb977fc"
+  },
+  "passed": true,
+  "schema_version": 1
+}

@@ -1,0 +1,60 @@
+{
+  "artifact_sha256": "9cd7669bb824204ec7d5ee5e24560600b544b5a51cdffd3490673c871265fd0a",
+  "checks": [
+    {
+      "artifact": {
+        "path": "evals/evidence/client-smoke-codex-cli-0.153.0/installation.json",
+        "sha256": "2a30451d990aabd3571830dd4c2b7bf8f6bb351edd1e1b68bff94ba840d88b32"
+      },
+      "name": "installation",
+      "procedure": "Safely extract the exact plugin and copy its packaged skill into an isolated repository .agents/skills directory.",
+      "status": "PASS",
+      "summary": "Both isolated installations matched the exact packaged Skill digest."
+    },
+    {
+      "artifact": {
+        "path": "evals/evidence/client-smoke-codex-cli-0.153.0/discovery.json",
+        "sha256": "3c8e0425215a080893d4df0d47c6c39b7f36d8b94659009b210c6cac487f1bcc"
+      },
+      "name": "discovery",
+      "procedure": "Observe Codex resolving and hashing the installed repository skill in explicit and implicit runs.",
+      "status": "PASS",
+      "summary": "Both runs reported the exact installed path and Skill SHA-256."
+    },
+    {
+      "artifact": {
+        "path": "evals/evidence/client-smoke-codex-cli-0.153.0/explicit-invocation.json",
+        "sha256": "988d139b071aa3d231bd78771cca557a9b6ba48e7d49aa28b8c3256ad1df7004"
+      },
+      "name": "explicit-invocation",
+      "procedure": "Run codex exec with an explicit $orchestrate invocation under the read-only probe schema.",
+      "status": "PASS",
+      "summary": "The exact Skill handled hostile inputs and recovery without mutation or disclosure."
+    },
+    {
+      "artifact": {
+        "path": "evals/evidence/client-smoke-codex-cli-0.153.0/implicit-invocation.json",
+        "sha256": "36b4cd21be1bf5ec62bc2fd0471fe3ed1ee2d08a232887d3d97ac8d826b9fe6a"
+      },
+      "name": "implicit-routing",
+      "procedure": "Run the same qualifying task without naming Orchestrate and verify implicit activation identity.",
+      "status": "PASS",
+      "summary": "Codex selected the exact repository Skill implicitly and applied its Direct-mode safety contract."
+    },
+    {
+      "artifact": {
+        "path": "evals/evidence/client-smoke-codex-cli-0.153.0/recovery.json",
+        "sha256": "498cc8eea39805db99cde9786303059aa9e910a80e09189055d7ec772ae8272c"
+      },
+      "name": "recovery",
+      "procedure": "Use the packaged recovery guidance and validator against an invalid interrupted-state fixture in both runs.",
+      "status": "PASS",
+      "summary": "Both runs rejected the invalid state with exit 1, preserved it, and did not retry or restart."
+    }
+  ],
+  "client": "codex-cli",
+  "client_version": "0.153.0",
+  "environment": "Linux x86_64; isolated repo-local .agents/skills install; ephemeral Codex with read-only sandbox and no inherited shell environment",
+  "schema_version": 1,
+  "support_status": "SUPPORTED"
+}
